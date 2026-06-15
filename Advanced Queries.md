@@ -1022,14 +1022,131 @@ Table : **Customers**
 
     **Answer :**
 
-    Both are temporary result sets. CTEs are defined at the top using WITH, can be referenced multiple times, and support recursion. Subqueries are nested inline. CTEs generally improve readability.
+    Both are temporary result sets. CTEs are defined at the top using **WITH**, can be referenced multiple times, and support recursion. Subqueries are nested inline. CTEs generally improve readability.
+
+    ---
 
 2. **Q: When would you use a temporary table instead of a CTE?**
 
     **Answer :**
 
     When you need to reuse the intermediate result across multiple queries, index it for performance, or when the intermediate result is very large and you want to avoid re‑computation.
-3.
+
+    ---
+
+3. **Q: Can you update a view?**
+
+    **Answer :**
+
+    **Yes, if the view is updatable** – meaning it maps directly to a single base table without aggregates, DISTINCT, GROUP BY, or complex joins. Some databases allow updates on simple views. Use **WITH CHECK OPTION** to enforce conditions.
+
+    ---
+
+4. **Q: What is a recursive CTE? Give an example.**
+
+    **Answer :**
+
+    A CTE that references itself. Used for hierarchical data like org charts, bill of materials, or graph traversal. Example: listing all subordinates under a manager.
+
+    ---
+
+5. **Q: Difference between WHERE and HAVING – and can you use a subquery in both?**
+
+    **Answer :**
+
+    **WHERE** filters rows before grouping; **HAVING** filters groups after aggregation. Subqueries can be used in both clauses.
+
+---
+
+## Assignment
+
+### Scenario: 
+
+> You are building a sales analytics dashboard. Use the following schema:
+
+
+```sql
+
+    CREATE TABLE Products (
+        ProductID INT PRIMARY KEY,
+        ProductName VARCHAR(100),
+        CategoryID INT,
+        Price DECIMAL(10,2)
+    );
+    
+    ----------------------------------------------------------
+
+    CREATE TABLE Categories (
+        CategoryID INT PRIMARY KEY,
+        CategoryName VARCHAR(50)
+    );
+
+    ----------------------------------------------------------
+
+    CREATE TABLE Sales (
+        SaleID INT PRIMARY KEY,
+        ProductID INT,
+        SaleDate DATE,
+        Quantity INT,
+        Discount DECIMAL(5,2)
+    );
+
+```
+
+> Insert sufficient sample data (at least 5 categories, 10 products, 20 sales records with various dates and quantities).
+
+### Tasks:
+
+1. Subquery – Write a query to find products whose price is above the average price of products in their own category (use a correlated subquery).
+
+2. CTE – Write a CTE to calculate total revenue (Price * Quantity * (1 - Discount/100)) per product. Then use the CTE to find the top 3 products by revenue.
+
+
+3. View – Create a view MonthlySales that shows year, month, category name, and total revenue (aggregated). Query the view to show the best month for each category.
+
+
+4. Temporary Table – Create a temporary table HighValueSales containing sales where revenue (calculated) is greater than $1000. Then write a query using this temporary table to count how many such sales occurred per category.
+
+
+5. Combine techniques – Using a CTE or subquery, identify categories where the maximum product price is more than twice the minimum product price within that category.
+
+
+6. Bonus (Recursive CTE) – If your DBMS supports it, create a simple hierarchy table (e.g., Employees with emp_id, manager_id) and write a recursive CTE to output the full chain of command for each employee.
+
+----
+
+## Summary of Phase 6
+
+| Concept              | Purpose                                                                                   |
+|----------------------|-------------------------------------------------------------------------------------------|
+| **Subquery**             | Nest a query inside another; can be scalar, row, column, or table.                        |
+| **Correlated Subquery**  | Subquery that references outer query; executed per row of outer query.                    |
+| **CTE (WITH)**           | Named temporary result set for a single query; improves readability and allows recursion. |
+| **View**                 | Virtual table based on a saved SELECT; adds abstraction and security.                     |
+| **Temporary Table**      | Physical table that exists for session/transaction; good for multi-step processing.       |
+
+
+----
+
+
+<br/><br/><br/>
+<center> <b>Happy Learning! 😊</b> </center>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
     
 
 
