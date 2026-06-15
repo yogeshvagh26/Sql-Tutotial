@@ -567,3 +567,493 @@ You need to calculate the average salary per department, then list employees ear
 
 ---
 
+
+## 4. **Views**
+
+**A view is a virtual table based on the result set of a SELECT query.** 
+
+> It does not store data physically (except for materialized views in some databases). 
+
+> Views simplify complex queries, provide security by restricting access to specific columns/rows, and act as a layer of abstraction.
+
+You can query a view like a regular table. Some views are updatable (if they meet certain conditions).
+
+
+#### Real-World Example
+
+A manager needs to see only employee names and departments, not salaries. Create a view **EmployeePublic** that excludes the salary column. Then grant access to the view instead of the base table.
+
+---
+
+#### SQL Syntax
+
+```sql
+
+    CREATE VIEW view_name AS
+        SELECT columns
+        FROM tables
+        WHERE condition;
+
+    -- Then use it
+    SELECT * 
+    FROM view_name;
+
+    -- Drop a view
+    DROP VIEW view_name;
+
+```
+
+#### Examples
+
+
+#### Example 1: Simple view
+
+```sql
+
+    CREATE VIEW ActiveEmployees AS
+        SELECT 
+            emp_id, 
+            name, 
+            department_id
+        FROM Employees
+        WHERE status = 'Active';
+
+```
+
+#### Example 2: View with joins
+
+```sql
+
+    CREATE VIEW OrderDetailsView AS
+        SELECT 
+            o.order_id, 
+            c.customer_name, 
+            o.order_date, 
+            o.amount
+        FROM Orders o
+        JOIN Customers c 
+            ON o.customer_id = c.customer_id;
+
+```
+
+#### Example 3: View with aggregation (usually not updatable)
+
+```sql
+
+    CREATE VIEW DeptSummary AS
+        SELECT 
+            department_id, 
+            COUNT(*) AS emp_count, 
+            AVG(salary) AS avg_salary
+        FROM Employees
+        GROUP BY department_id;
+
+```
+
+#### Example 4: Updatable view (simple)
+
+```sql
+
+    CREATE VIEW EmployeesSimple AS
+        SELECT 
+            emp_id, 
+            name, 
+            salary 
+        FROM Employees;
+
+    -- You can update salary through this view (if it maps directly)
+    UPDATE EmployeesSimple 
+    SET salary = 65000 
+    WHERE emp_id = 1;
+
+```
+
+---
+
+### Visual Table Illustration
+
+#### Base table: Employees (columns: emp_id, name, salary, ssn, dept_id)
+
+#### View: EmployeePublic
+
+```sql
+
+    CREATE VIEW EmployeePublic AS
+        SELECT 
+            emp_id, 
+            name, 
+            dept_id 
+            FROM Employees;
+
+```
+> When you **SELECT * FROM EmployeePublic;**, you see only emp_id, name, dept_id. The salary and SSN are hidden.
+
+---
+
+#### Practice Questions
+
+1. Create a view named **HighValueOrders** that shows orders with amount > 500, including order_id, customer_id, and amount.
+
+2. Query that view to count how many high‑value orders exist.
+
+
+3. Create a view that joins Products and Categories to show product name and category name.
+
+
+4. Drop a view.
+
+---
+#### Quiz
+
+**4. A view is:**
+
+    a) A physical copy of data
+    b) A saved query that acts like a virtual table
+    c) A temporary table that disappears after session
+
+
+---
+
+### Summary for Views
+
+> Views encapsulate complex logic, enhance security, and simplify frequent queries. They don’t store data unless materialized.
+
+---
+
+
+## 5. **Temporary Tables**
+
+**Temporary tables are physical tables that exist only for the duration of a session or transaction (depending on database).** 
+
+> They are **useful for storing intermediate results**, especially when you need to **process data in steps**, or **when you want to index or manipulate a subset repeatedly**.
+
+**Unlike CTEs (which exist only for one query),** temporary tables can be used across **multiple queries in the same session**. They are **automatically dropped when the session ends** (or when the transaction ends, depending on type).
+
+#### Real-World Example
+
+You are generating a monthly report that requires complex transformations. Instead of writing a giant single query, you store intermediate results in a temporary table, index it, then run multiple analytic queries against it.
+
+---
+
+#### SQL Syntax
+
+#### MySQL / PostgreSQL / SQLite (global temporary)
+
+```sql
+
+    CREATE TEMPORARY 
+        TABLE temp_table_name (
+            column1 datatype,
+            column2 datatype
+        );
+
+    -- Or create from a SELECT
+    CREATE TEMPORARY 
+        TABLE temp_table_name AS
+
+    SELECT columns 
+    FROM base_table 
+    WHERE condition;
+
+```
+
+#### SQL Server
+
+```sql
+    -- Local temporary table (single #)
+    CREATE TABLE #temp_table (column1 datatype);
+    
+    -- Global temporary table (double ##)
+    CREATE TABLE ##temp_table (column1 datatype);
+```
+
+---
+
+
+#### Examples
+
+#### Example 1: Create empty temp table and insert
+
+
+```sql
+
+    CREATE TEMPORARY 
+        TABLE TopCustomers (
+            customer_id INT,
+            total_spent DECIMAL(10,2)
+        );
+
+    INSERT INTO TopCustomers
+        SELECT 
+            customer_id, 
+            SUM(amount)
+        FROM Orders
+        GROUP BY customer_id
+        HAVING SUM(amount) > 1000;
+
+```
+
+#### Example 2: Create temp table from SELECT
+
+```sql
+
+    CREATE TEMPORARY 
+        TABLE HighValueOrders AS
+
+    SELECT * 
+    FROM Orders 
+    WHERE amount > 1000;
+    
+```
+
+#### Example 3: Use temp table in multiple queries
+
+```sql
+
+    -- Create temp table of active employees
+    CREATE TEMPORARY 
+        TABLE ActiveEmps AS
+        SELECT * 
+        FROM Employees 
+        WHERE status = 'Active';
+
+    -- First analysis
+    SELECT 
+        department_id, 
+        COUNT(*) 
+    FROM ActiveEmps 
+    GROUP BY department_id;
+
+    -- Second analysis
+    SELECT AVG(salary) 
+    FROM ActiveEmps;
+
+    -- Temp table is dropped automatically at end of session
+    
+```
+
+#### Example 4: Temporary table with index (for performance)
+
+```sql
+    CREATE TEMPORARY 
+        TABLE TempData AS
+        SELECT 
+            order_id, 
+            customer_id, 
+            amount 
+        FROM Orders 
+        WHERE order_date > '2025-01-01';
+
+    CREATE INDEX idx_customer 
+        ON TempData(customer_id);
+
+    -- Now run heavy queries using TempData
+    
+```
+---
+
+### Visual Table Illustration
+
+**Session A** creates a temporary table **TempOrders** with data from **Orders**.
+
+**Session B** cannot see **TempOrders** (it's session‑private in most DBMS).
+
+After session A ends, **TempOrders** is automatically dropped.
+
+---
+
+#### Practice Questions
+
+1. Create a temporary table containing all products priced above $100.
+
+
+2. Insert into that temp table a new product (just for testing).
+
+3. Write a query that joins the temp table with Orders to see which expensive products have been ordered.
+
+
+4. Explain the lifetime of a temporary table in your database system.
+
+---
+
+#### Quiz
+
+**5. A temporary table:**
+
+    a) Exists permanently until dropped
+    b) Exists only for the current session (or transaction)
+    c) Is shared across all users
+
+---
+
+### Summary for Temporary Tables
+
+> Temporary tables store intermediate results and are automatically cleaned up.
+
+> They are useful for multi‑step processing and performance optimisation.
+
+---
+
+## Practice Questions (Comprehensive)
+
+#### Use these tables:
+
+Table : **Orders**
+
+| OrderID | CustomerID | Amount | OrderDate  |
+|---------|------------|--------|------------|
+| 1       | 101        | 250    | 2025-01-10 |
+| 2       | 102        | 600    | 2025-01-15 |
+| 3       | 101        | 150    | 2025-02-01 |
+| 4       | 103        | 800    | 2025-02-10 |
+
+Table : **Customers**
+
+| CustomerID | Name    |
+|------------|---------|
+| 101        | Alice   |
+| 102        | Bob     |
+| 103        | Charlie |
+| 104        | David   |
+
+
+####  Write queries using the advanced techniques:
+
+1. Subquery: Find customers who have placed an order with amount > 500.
+
+2. Correlated Subquery: For each customer, show their name and the amount of their highest order.
+
+3. CTE: Write a CTE to compute total spent per customer, then show customers who spent more than $500.
+
+4. View: Create a view CustomerOrders that shows customer name, order ID, and amount. Then query it to list all orders for 'Alice'.
+
+
+5. Temporary Table: Create a temporary table MarchOrders containing orders from March 2025 (assume some data), then use it to count how many orders.
+
+#### Answers (self‑check):
+
+```sql
+
+    -- 1
+    SELECT name 
+    FROM Customers
+    WHERE CustomerID IN (SELECT CustomerID 
+                            FROM Orders 
+                            WHERE Amount > 500
+                        );
+
+    ----------------------------------------------------------
+
+    -- 2 (correlated)
+    SELECT 
+        name, (SELECT MAX(Amount) 
+                FROM Orders o 
+                WHERE o.CustomerID = c.CustomerID
+                ) AS max_order
+    FROM Customers c;
+
+    ----------------------------------------------------------
+
+    -- 3
+    WITH CustomerTotal AS (
+        SELECT 
+            CustomerID, 
+            SUM(Amount) AS total_spent
+        FROM Orders
+        GROUP BY CustomerID
+    )
+    SELECT 
+        c.Name, 
+        ct.total_spent
+    FROM Customers c
+    JOIN CustomerTotal ct 
+        ON c.CustomerID = ct.CustomerID
+    WHERE ct.total_spent > 500;
+
+    ----------------------------------------------------------
+    
+    -- 4
+    CREATE VIEW CustomerOrders AS
+        SELECT 
+            c.Name, 
+            o.OrderID, 
+            o.Amount
+        FROM Customers c
+        JOIN Orders o 
+            ON c.CustomerID = o.CustomerID;
+
+    SELECT * 
+    FROM CustomerOrders 
+    WHERE Name = 'Alice';
+
+    ----------------------------------------------------------
+
+    -- 5
+    CREATE TEMPORARY 
+        TABLE MarchOrders AS
+        SELECT * 
+        FROM Orders 
+        WHERE MONTH(OrderDate) = 3;
+
+    SELECT COUNT(*) FROM MarchOrders;
+
+```
+
+---
+
+### Quiz (Answers)
+
+1. b) Scalar subquery
+
+2. b) Once for each row of the outer query
+
+3. b) WITH clause
+
+4. b) A saved query that acts like a virtual table
+
+5. b) Exists only for the current session (or transaction)
+
+----
+
+### Interview Questions
+
+
+1. **Q: What is the difference between a subquery and a CTE?**
+
+    **Answer :**
+
+    Both are temporary result sets. CTEs are defined at the top using WITH, can be referenced multiple times, and support recursion. Subqueries are nested inline. CTEs generally improve readability.
+
+2. **Q: When would you use a temporary table instead of a CTE?**
+
+    **Answer :**
+
+    When you need to reuse the intermediate result across multiple queries, index it for performance, or when the intermediate result is very large and you want to avoid re‑computation.
+3.
+    
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
