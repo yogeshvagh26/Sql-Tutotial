@@ -1,5 +1,17 @@
 # Phase 7: Database Design
 
+* **Primary Keys**
+* **Foreign Keys**
+* **Constraints**
+* **Normalization**
+* **Relationships**
+    * One-to-One
+    * One-to-Many
+    * Many-to-Many
+
+---
+
+
 ### Overview
 
 **Database design is the blueprint for organizing data efficiently and ensuring data integrity.** This phase covers the fundamental building blocks:
@@ -400,3 +412,455 @@ CREATE TABLE Orders (
 > Constraints enforce business rules at the database level, preventing invalid data insertion and maintaining consistency.
 
 ---
+
+## 4. Normalization
+
+**(Normalization is the process of organizing database tables to reduce redundancy and dependency.)** 
+
+> It involves splitting tables and defining relationships according to a set of normal forms (1NF, 2NF, 3NF, BCNF, etc.). 
+
+**The goals:**
+
+* Eliminate duplicate data.
+
+* Avoid update, insertion, and deletion anomalies.
+
+* Ensure data dependencies make sense.
+
+#### Normal Forms (simplified):
+
+* 1NF – Each column contains atomic (indivisible) values; no repeating groups.
+
+* 2NF – 1NF + all non‑key columns depend on the whole primary key (no partial dependencies).
+
+* 3NF – 2NF + no transitive dependencies (non‑key columns depend only on the primary key).
+
+
+#### Real-World Example
+
+**Unnormalized table (repeating groups):**
+
+| OrderID | Customer | Products                  |
+|---------|----------|---------------------------|
+| 101     | Alice    | Laptop, Mouse, Keyboard   |
+
+**Problems:** 
+
+> cannot search for a single product efficiently; hard to add/remove products.
+
+
+**Normalized (1NF):** 
+
+> separate rows per product. But still redundant customer name.
+
+
+**2NF & 3NF:** 
+
+> split into Orders, Customers, OrderItems tables.
+
+---
+
+### Visual Table Illustration
+
+#### Before Normalization (Denormalized)
+
+| EmployeeID | Name  | Department | DeptPhone |
+|------------|-------|------------|-----------|
+| 1          | Alice | Sales      | 555-1000  |
+| 2          | Bob   | IT         | 555-2000  |
+| 3          | Carol | Sales      | 555-1000  |
+
+**Redundancy**: department phone repeated for each employee in Sales.
+
+#### After Normalization (3NF)
+
+#### Employees
+
+| EmpID | Name  | DeptID |
+|-------|-------|--------|
+| 1     | Alice | 10     |
+| 2     | Bob   | 20     |
+| 3     | Carol | 10     |
+
+#### Departments
+
+| DeptID | DeptName | Phone     |
+|--------|----------|-----------|
+| 10     | Sales    | 555-1000  |
+| 20     | IT       | 555-2000  |
+
+---
+
+### Practice Questions
+
+1. What anomaly occurs if you store customer address in every order row?
+
+2. Convert a table Books (BookID, Title, AuthorID, AuthorAddress) into 3NF.
+
+3. Why is 1NF necessary before 2NF?
+
+---
+
+### Quiz
+
+**4. Normalization helps to:**
+
+    a) Increase redundancy
+    b) Reduce data duplication and anomalies
+    c) Speed up all queries
+
+---
+
+### Summary for Normalization
+
+> Normalization eliminates redundancy and improves data integrity. 
+
+> Most practical designs aim for 3NF, but occasional denormalization may be used for performance.
+
+
+----
+
+## 5. Relationships: One‑to‑One, One‑to‑Many, Many‑to‑Many
+
+**Relationships describe how tables connect via foreign keys.**
+
+#### 5.1 One‑to‑One (1:1)
+
+* One row in table A is linked to exactly one row in table B.
+
+* Implemented by placing a foreign key in one table with a **UNIQUE** constraint (or merging tables, but splitting is useful for security or optional data).
+
+* Example: **Users** and **UserProfiles** (each user has one profile).
+
+
+#### 5.2 One‑to‑Many (1:N)
+
+* One row in table A can be linked to **many rows** in table B.
+
+* The **many side** contains the foreign key.
+
+* This is the most common relationship.
+
+* Example: One customer can have many orders; **Orders** table has **CustomerID** foreign key.
+
+#### 5.3 Many‑to‑Many (M:N)
+
+* Many rows in table A can relate to many rows in table B.
+
+* Implemented using a junction table (also called associative or bridge table) that contains foreign keys to both tables.
+
+* Example: **Students** and **Courses** – a student can take many **courses**, a **course** can have many **students**. Junction table: **Enrollments** with **StudentID** and **CourseID** as composite primary key.
+
+#### Real-World Example
+
+* 1:1 – **Employees** and **EmployeeDetails** (sensitive info like SSN, separate for security).
+
+* 1:N – **Categories** to **Products** (one category, many products).
+
+* M:N – **Doctors** and **Patients** (many doctors see many patients; junction table Appointments).
+
+---
+
+#### SQL Syntax
+
+* **One‑to‑Many (foreign key on many side)**
+
+    ```sql
+
+        CREATE TABLE Orders (
+            OrderID INT PRIMARY KEY,
+            CustomerID INT REFERENCES Customers(CustomerID)
+        );
+
+    ```
+
+* **One‑to‑One (foreign key + UNIQUE)**
+
+    ```sql
+    
+        CREATE TABLE UserProfiles (
+            ProfileID INT PRIMARY KEY,
+            UserID INT UNIQUE REFERENCES Users(UserID),
+            Bio TEXT
+        );
+        
+    ```
+
+* **Many‑to‑Many (junction table)**
+
+    ```sql
+
+        CREATE TABLE Students (
+            StudentID INT PRIMARY KEY,
+            Name VARCHAR(100)
+        );
+
+        CREATE TABLE Courses (
+            CourseID INT PRIMARY KEY,
+            Title VARCHAR(100)
+        );
+
+        CREATE TABLE Enrollments (
+            StudentID INT,
+            CourseID INT,
+            EnrollmentDate DATE,
+            PRIMARY KEY (StudentID, CourseID),
+            FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+            FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
+        );
+
+    ```
+
+---
+
+### Visual Table Illustration
+
+* **One‑to‑Many**
+
+    ----
+    Categories (1) ──┬── Products (many)
+
+    | CategoryID | Name         |
+    |------------|--------------|
+    | 1          | Electronics  |
+
+    | ProductID | Name   | CategoryID |
+    |-----------|--------|------------|
+    | 101       | Laptop | 1          |
+    | 102       | Mouse  | 1          |
+
+* **Many‑to‑Many**
+
+    Students ──┬── Enrollments ──┬── Courses
+
+
+    **Students:**
+
+    | StudentID | Name  |
+    |-----------|-------|
+    | 1         | Alice |
+    | 2         | Bob   |
+
+    **Courses:**
+
+    | CourseID | Title   |
+    |----------|---------|
+    | 10       | Math    |
+    | 20       | Science |
+
+
+    **Enrollments:**
+
+    | StudentID | CourseID |
+    |-----------|----------|
+    | 1         | 10       |
+    | 1         | 20       |
+    | 2         | 10       |
+
+    > Alice takes Math and Science; Bob takes Math only.
+
+
+---
+
+#### Practice Questions
+
+1. Identify the relationship between Authors and Books (one author can write many books; a book has one author). → One‑to‑many.
+
+2. Design tables for Users and Roles where a user can have many roles and a role can belong to many users.
+
+
+3. When would you use a one‑to‑one relationship instead of merging tables?
+
+#### Quiz
+
+**5. A many‑to‑many relationship requires:**
+
+    a) A foreign key in one table
+    b) A junction table
+    c) Two primary keys in one table
+
+---
+
+### Summary for Relationships
+
+* 1:1 – foreign key + unique constraint.
+
+* 1:N – foreign key on the “many” side.
+
+* M:N – junction table with two foreign keys.
+
+> Understanding relationships is key to designing a normalized database.
+
+---
+
+## Practice Questions (Comprehensive)
+
+Given the following business rules, design a normalized database schema (tables, columns, keys, constraints, relationships):
+
+1. A Customer has a unique ID, name, and email.
+
+2. A Product has a unique ID, name, price (must be >= 0), and a category (each product belongs to exactly one category).
+
+3. A Category has a unique ID and name.
+
+4. A customer can place many Orders; each order has a unique ID, order date, and total amount.
+
+5. An order can contain many products; each product can appear in many orders. For each product in an order, we store the quantity purchased.
+
+6. Each order belongs to exactly one customer.
+
+> Write the CREATE TABLE statements including all constraints (primary keys, foreign keys, CHECK, NOT NULL where appropriate).
+
+#### Answer (self‑check):
+
+```sql
+
+    CREATE TABLE Customers (
+        CustomerID INT PRIMARY KEY,
+        Name VARCHAR(100) NOT NULL,
+        Email VARCHAR(100) UNIQUE NOT NULL
+    );
+
+    CREATE TABLE Categories (
+        CategoryID INT PRIMARY KEY,
+        Name VARCHAR(50) NOT NULL
+    );
+
+    CREATE TABLE Products (
+        ProductID INT PRIMARY KEY,
+        Name VARCHAR(100) NOT NULL,
+        Price DECIMAL(10,2) CHECK (Price >= 0),
+        CategoryID INT NOT NULL,
+        FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
+    );
+
+    CREATE TABLE Orders (
+        OrderID INT PRIMARY KEY,
+        CustomerID INT NOT NULL,
+        OrderDate DATE NOT NULL,
+        TotalAmount DECIMAL(10,2) CHECK (TotalAmount >= 0),
+        FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+    );
+
+    CREATE TABLE OrderItems (
+        OrderID INT,
+        ProductID INT,
+        Quantity INT CHECK (Quantity > 0),
+        PRIMARY KEY (OrderID, ProductID),
+        FOREIGN KEY (OrderID) REFERENCES Orders(OrderID) ON DELETE CASCADE,
+        FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+    );
+
+```
+
+---
+
+## Quiz (Answers)
+
+1. b) 1
+
+2. b) Referential integrity between tables
+
+3. b) NOT NULL
+
+4. b) Reduce data duplication and anomalies
+
+5. b) A junction table
+
+
+---
+
+## Interview Questions
+1. **What is the difference between a primary key and a unique key?**
+
+    **Answer**
+
+    Both enforce uniqueness, but a table can have only one primary key (which is also NOT NULL). Unique keys can be NULL (one NULL allowed in most DBMS), and there can be multiple unique keys per table.
+
+2. **What are the three types of relationships? Give examples.**
+
+    **Answer**
+
+    One‑to‑one (person ↔ passport), one‑to‑many (customer ↔ orders), many‑to‑many (students ↔ courses).
+
+3. **Explain the purpose of normalization. What is 3NF?**
+    
+    **Answer**
+
+    Normalization reduces redundancy and anomalies. 3NF means the table is in 2NF and has no transitive dependencies (non‑key columns depend only on the primary key, not on other non‑key columns).
+
+4. **Can a foreign key reference a unique column that is not a primary key?**
+
+    **Answer**
+    
+    Yes, it can reference any column that has a UNIQUE constraint.
+
+5. **What happens if you try to delete a parent row that has child rows in a foreign key relationship without ON DELETE CASCADE?**
+    
+    **Answer**
+    
+    The delete will fail (or will set child foreign keys to NULL if ON DELETE SET NULL is defined). By default, most DBMS prevent the deletion to maintain referential integrity.
+    
+6. **How do you implement a many‑to‑many relationship?**
+
+    **Answer**
+
+    Create a junction table that contains foreign keys to both related tables, and usually a composite primary key using both foreign keys.
+
+---
+
+## Assignment
+
+#### Scenario: 
+
+> You are designing a database for a library management system. The requirements:
+
+* Each Book has a unique ISBN, title, publication year, and a category (e.g., Fiction, Non‑fiction).
+
+* Each Author has a unique ID, name, and country. A book can have one or more authors; an author can write many books.
+
+* Each Member has a unique ID, full name, email, and membership date.
+
+
+* A member can borrow many books over time, but a specific copy of a book can only be borrowed by one member at a time. For simplicity, assume a book has multiple copies (each copy has a unique copy number). Track which copy is borrowed, the borrow date, due date, and return date.
+
+
+* Library branch – each branch has an ID, name, and address. Books are stored at specific branches. A book title may be available at multiple branches.
+
+#### Tasks:
+
+1. Identify all entities (tables) and their attributes.
+
+2. Identify primary keys for each table.
+
+3. Identify all relationships (1:1, 1:N, M:N) and foreign keys.
+
+4. Write the complete CREATE TABLE SQL script with all constraints (PRIMARY KEY, FOREIGN KEY, NOT NULL, CHECK, UNIQUE, DEFAULT where appropriate).
+
+5. Insert sample data (at least 3 books with multiple authors, 2 members, 2 branches, and several borrow records).
+
+6. Write three example queries:
+
+    * List all books currently borrowed by a specific member.
+
+    * Show the number of books per category available at a given branch.
+
+    * Find members who have overdue books (return date > due date, or not returned yet and due date < today).
+
+**Bonus:** Explain which normal form your design satisfies (should be at least 3NF). If any denormalization was done, justify why.
+
+---
+
+## Summary of Phase 7
+
+| Concept            | Purpose                                                                 |
+|--------------------|-------------------------------------------------------------------------|
+| **Primary Key**        | Uniquely identifies each row.                                           |
+| **Foreign Key**        | Links tables and enforces referential integrity.                        |
+| **Constraints**        | Rules (NOT NULL, UNIQUE, CHECK, DEFAULT) for data integrity.            |
+| **Normalization**      | Process to reduce redundancy and anomalies (1NF, 2NF, 3NF).             |
+| **1:1 Relationship**  | One row matches one row (foreign key + UNIQUE).                         |
+| **1:N Relationship**  | One row matches many rows (foreign key on many side).                   |
+| **    **  | Many rows match many rows (junction table).                             |
+
+
