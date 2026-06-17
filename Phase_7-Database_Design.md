@@ -864,3 +864,8 @@ Given the following business rules, design a normalized database schema (tables,
 | **    **  | Many rows match many rows (junction table).                             |
 
 
+----
+
+
+<br/><br/><br/>
+<center> <b>Happy Learning! 😊</b> </center>
