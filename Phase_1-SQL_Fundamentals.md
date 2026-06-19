@@ -228,7 +228,7 @@ What data type is best for storing '2025-12-31'?
 ---
 
 ## Summary for 5
-**Data types** enforce the kind of data stored – match the column to its real‑world meaning.
+> **Data types** enforce the kind of data stored – match the column to its real‑world meaning.
 
 ---
 
