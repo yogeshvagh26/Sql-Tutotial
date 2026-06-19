@@ -116,7 +116,7 @@ A developer working locally installs MySQL, starts the server, and uses a client
 
 ## 4. Creating Databases
 
-**CREATE DATABASE** makes a **new empty database**. After creation, you can switch to it and start building tables.
+**`CREATE DATABASE`** makes a **new empty database**. After creation, you can switch to it and start building tables.
 
 #### Real-World Example
 A new project for a library management system: first create a database named LibraryDB.
