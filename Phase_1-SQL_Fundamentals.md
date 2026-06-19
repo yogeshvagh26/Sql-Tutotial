@@ -71,11 +71,11 @@ An online store ***database*** has a Products ***table***. Each row is one produ
 
 #### SQL Syntax (No command – just concept)
 
-Use CREATE DATABASE, CREATE TABLE to define these structures.
+Use `CREATE DATABASE`, `CREATE TABLE` to define these structures.
 
 
 ### Summary for 2
-**Databases** contain **tables**; tables have **rows (records)** and **columns (fields)**.
+> **Databases** contain **tables**; tables have **rows (records)** and **columns (fields)**.
 
 ---
 
