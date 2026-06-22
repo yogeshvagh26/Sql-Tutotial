@@ -303,7 +303,7 @@ After creating **UniversityDB**, you need a Students table to hold student infor
 
 ## 7. INSERT
 
-**INSERT INTO** adds new **rows (records)** to an **existing table**. You can *insert* one row or multiple rows at once**.
+**INSERT INTO** adds new **rows (records)** to an **existing table**. You can **insert one row or multiple rows at once**.
 
 #### Real-World Example
 
