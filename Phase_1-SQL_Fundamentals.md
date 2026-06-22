@@ -149,7 +149,7 @@ A new project for a library management system: first create a database named Lib
 
 ---
 
-### Quiz (answers at end)
+#### Quiz (answers at end)
 > Which SQL keyword is used to create a new database?
  1. NEW DB
  2. CREATE DATABASE
@@ -219,7 +219,7 @@ An **age** column should be an **integer (whole number)**, not text, **so you ca
 
 ---
 
-### Quiz
+#### Quiz
 What data type is best for storing '2025-12-31'?
 1.  TEXT
 2. DATE
@@ -227,7 +227,7 @@ What data type is best for storing '2025-12-31'?
 
 ---
 
-## Summary for 5
+### Summary for 5
 > **Data types** enforce the kind of data stored – match the column to its real‑world meaning.
 
 ---
@@ -286,7 +286,7 @@ After creating **UniversityDB**, you need a Students table to hold student infor
 
 > Add a Rating column with type DECIMAL(3,1).
 
-### Quiz
+#### Quiz
 
 **Which SQL command removes a table?**
 1. DELETE TABLE
@@ -296,7 +296,7 @@ After creating **UniversityDB**, you need a Students table to hold student infor
 ---
 
 ### Summary for 6
-CREATE TABLE builds the skeleton of your data storage.
+> CREATE TABLE builds the skeleton of your data storage.
 
 
 
@@ -359,7 +359,7 @@ A new employee joins the company – you add their details to the Employees tabl
 
 > Insert three students in one command.
 
-### Quiz
+#### Quiz
 **What happens if you omit column names in INSERT?**
 1. Error always
 2. Values must match all columns in table order
@@ -456,7 +456,7 @@ A manager wants to see all employees and their salaries –
 
 --- 
 
-### Quiz
+#### Quiz
 **Which symbol means “all columns”?**
 1. ALL
 2. %
@@ -558,7 +558,7 @@ A manager wants to see all employees and their salaries –
 
 ---
 
-### Quiz
+#### Quiz
 **Which query selects students named 'John'?**
 1. SELECT * WHERE Name = 'John'
 2. SELECT * FROM Students WHERE Name = 'John'
@@ -647,7 +647,7 @@ Show products from cheapest to most expensive – ORDER BY Price ASC.
 
 > Show products ordered by price descending, then by name ascending.
 
-### Quiz
+#### Quiz
 **ORDER BY default order is:**
 1. DESC
 2. ASC
@@ -732,7 +732,7 @@ Show the three most expensive products – combine **ORDER BY Price DESC and LIM
 
 > Show 5 products after skipping the first 3 (pagination).
 
-### Quiz
+#### Quiz
 **LIMIT 10 returns:**
 1. 10 random rows
 2. First 10 rows
@@ -811,7 +811,7 @@ Find all unique departments in the company –
 
 > Write a query to see unique (City, State) pairs.
 
-### Quiz
+#### Quiz
 **SELECT DISTINCT Name, Age from a table gives:**
 1. Unique names only
 2. Unique combinations of name and age
@@ -899,7 +899,7 @@ OrderID (INT PRIMARY KEY), CustomerName (VARCHAR), Amount (DECIMAL), OrderDate (
 
 ---
 
-### Quiz (Answers)
+#### Quiz (Answers)
 > CREATE DATABASE
 
 > DATE
