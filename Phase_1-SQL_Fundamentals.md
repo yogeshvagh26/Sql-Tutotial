@@ -296,6 +296,7 @@ After creating **UniversityDB**, you need a Students table to hold student infor
 ---
 
 ### Summary for 6
+
 > CREATE TABLE builds the skeleton of your data storage.
 
 
