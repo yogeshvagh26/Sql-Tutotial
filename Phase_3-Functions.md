@@ -59,7 +59,7 @@ In this phase we first learn scalar functions (String, Numeric, Date), then the 
 
 
 ### Real-World Example
-    **Format customer names for a mailing label:** 
+   **Format customer names for a mailing label:** 
 UPPER(last_name), CONCAT(first_name, ' ', last_name), and trim any extra spaces.
 
 ---
