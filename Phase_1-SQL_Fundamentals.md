@@ -384,18 +384,23 @@ A new employee joins the company – you add their details to the Employees tabl
 #### Real-World Example
 A manager wants to see all employees and their salaries – 
 ```sql 
-    SELECT * FROM Employees;
+    SELECT *
+    FROM Employees;
 ```    
 
 #### SQL Syntax
 
 ```sql 
 
-    SELECT column1, column2 FROM table_name;
+    SELECT
+        column1,
+        column2
+    FROM table_name;
 
     ------------------------------------
 
-    SELECT * FROM table_name;   -- all columns
+    SELECT *
+    FROM table_name;   -- all columns
 
 ```
 
