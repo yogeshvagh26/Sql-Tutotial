@@ -23,12 +23,14 @@ Imagine a school’s student records system with thousands of student profiles. 
 #### Retrieve all student names: 
 
 ```sql
-    SELECT name FROM students;
+    SELECT name
+    FROM students;
 ```    
 
 #### Add a new student: 
 ```sql 
-    INSERT INTO students (name, age) VALUES ('John', 15);
+    INSERT INTO students (name, age) VALUES
+    ('John', 15);
 ```
 
 ### Summary for 1
