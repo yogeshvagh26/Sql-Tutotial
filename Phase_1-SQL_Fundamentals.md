@@ -475,7 +475,7 @@ A manager wants to see all employees and their salaries –
 ---
 
 ### Summary for 8
-**SELECT reads** and **displays** data from tables.
+> **SELECT reads** and **displays** data from tables.
 
 ---
 
