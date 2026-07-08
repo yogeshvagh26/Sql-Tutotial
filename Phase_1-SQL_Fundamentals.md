@@ -410,7 +410,8 @@ A manager wants to see all employees and their salaries –
 ```sql
 
     -- All columns
-    SELECT * FROM Students;
+    SELECT *
+    FROM Students;
 
     ------------------------------------
 
