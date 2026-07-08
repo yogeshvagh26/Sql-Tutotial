@@ -13,7 +13,8 @@ Imagine a school’s student records system with thousands of student profiles. 
 ```sql
 -- Basic pattern
     SELECT columns 
-    FROM table WHERE condition;
+    FROM table
+    WHERE condition;
 ```
 
 
