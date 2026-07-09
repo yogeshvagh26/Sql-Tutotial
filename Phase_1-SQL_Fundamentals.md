@@ -132,7 +132,7 @@ A new project for a library management system: first create a database named Lib
 #### Examples
 
 ```sql
-     CREATE DATABASE SchoolDB;
+    CREATE DATABASE SchoolDB;
 
     CREATE DATABASE IF NOT EXISTS CompanyDB;   -- prevents error if DB exists
 ```
