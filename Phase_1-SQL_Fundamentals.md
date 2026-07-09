@@ -377,7 +377,7 @@ A new employee joins the company – you add their details to the Employees tabl
 
 ---
 
-### 8. SELECT
+## 8. SELECT
 
 **SELECT retrieves data from one or more tables.** It’s the most frequently used SQL command.
 
